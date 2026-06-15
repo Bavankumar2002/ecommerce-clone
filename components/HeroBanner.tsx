@@ -11,6 +11,7 @@ const bannerSlides = [
     tags: ["TOP BRANDS", "LATEST TRENDS"],
     cashback: "Unlimited 5%* cashback with Amazon Pay ICICI Bank credit card",
     bg: "#fce4ec",
+    // imageUrl: "https://m.media-amazon.com/images/I/61zxjKuMo6L._SX3000_.jpg",
     imageUrl: "https://images-eu.ssl-images-amazon.com/images/G/31/2025/GW/UNREC/PC/78269._CB785061629_.jpg",
   },
   {
