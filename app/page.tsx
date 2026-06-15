@@ -64,13 +64,16 @@
 //   );
 // }
 import Link from "next/link";
+import HeroBanner from "@/components/HeroBanner";
 
 export default function Home() {
   return (
-    <div>
-      <Link href="/login">
-        
-      </Link>
-    </div>
+
+    // <div>
+    //   <h1>Welcome to Amazon Clone</h1>
+    // </div>
+    <main>
+      <HeroBanner />
+    </main>
   );
 }

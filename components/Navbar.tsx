@@ -76,6 +76,9 @@ export default function Navbar() {
             <li>Fashion</li>
             <li>Home & Kitchen</li>
             <li>Amazon Pay</li>
+            <li>Computers</li>
+            <li>Toys & Games</li>
+            <li>Car & Motorbike</li>
           </ul>
         </div>
       </nav>
