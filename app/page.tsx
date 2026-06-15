@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div>
       <Link href="/login">
-        Go To Login
+        
       </Link>
     </div>
   );
