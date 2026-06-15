@@ -52,7 +52,7 @@ const categoryCards = [
       { label: "Neckband 1", img: "https://m.media-amazon.com/images/I/61+SW9nDTEL._AC_SY170_.jpg" },
       { label: "Neckband 2", img: "https://m.media-amazon.com/images/I/61+SW9nDTEL._AC_SY170_.jpg" },
       { label: "Earbuds 1", img: "https://m.media-amazon.com/images/I/61B5hIAmvdL._AC_SY170_.jpg" },
-      { label: "Earbuds 2", img: "https://m.media-amazon.com/images/I/71Ge4H0b52L._AC_SY170_.jpg" },
+      { label: "Earbuds 2", img: "https://m.media-amazon.com/images/I/71ndbdVgC7L._AC_SY170_.jpg" },
     ],
     link: "Explore all",
   },

@@ -94,9 +94,6 @@ export default function Navbar() {
             <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Amazon Pay</li>
             <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Fashion</li>
             <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Home & Kitchen</li>
-            <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Computers</li>
-            <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Toys & Games</li>
-            <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Car & Motorbike</li>
           </ul>
         </div>
       </nav>

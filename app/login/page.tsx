@@ -1,4 +1,22 @@
+"use client";
+
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+
 export default function LoginPage() {
+    const { login } = useAuth();
+    const router = useRouter();
+    const [email, setEmail] = useState("");
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (email.trim()) {
+            login(email);
+            router.push("/");
+        }
+    };
+
     return (
         <main className="mt-auto border-t border-gray-300 py-10">
             {/* Logo */}
@@ -10,7 +28,7 @@ export default function LoginPage() {
 
             {/* Login Card */}
             <div className="flex justify-center mt-6 mb-24">
-                <div className="w-[350px] border border-[#d5d9d9] rounded-lg p-6 bg-white shadow-sm">
+                <form onSubmit={handleSubmit} className="w-[350px] border border-[#d5d9d9] rounded-lg p-6 bg-white shadow-sm">
                     <h1 className="text-3xl font-normal mb-4">
                         Sign in or create account
                     </h1>
@@ -21,15 +39,18 @@ export default function LoginPage() {
 
                     <input
                         type="text"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="w-full h-8 border border-[#888c8c] rounded px-3 text-black focus:border-[#007185] focus:ring-2 focus:ring-[#c8f3fa]"
                     />
 
-                    <button className="w-full mt-4 bg-[#ffd814] hover:bg-[#f7ca00] h-8 rounded-full text-sm text-black">
+                    <button type="submit" className="w-full mt-4 bg-[#ffd814] hover:bg-[#f7ca00] h-8 rounded-full text-sm text-black cursor-pointer">
                         Continue
                     </button>
 
                     <p className="text-sm mt-4">
-                        By continuing, you agree to Amazon's{" "}
+                        By continuing, you agree to Amazon&apos;s{" "}
                         <a href="#" className="text-blue-600">
                             Conditions of Use
                         </a>{" "}
@@ -47,7 +68,7 @@ export default function LoginPage() {
                     <a href="#" className="text-blue-600 text-sm">
                         Create a free business account
                     </a>
-                </div>
+                </form>
             </div>
 
             {/* Footer */}
