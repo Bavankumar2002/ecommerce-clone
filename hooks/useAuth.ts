@@ -1,23 +1,50 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import api from "@/lib/api";
+
+export interface AuthUser {
+  id: number;
+  email: string | null;
+  phone: string | null;
+}
+
 export function useAuth() {
-  const login = (email: string) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("user", email);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try { setUser(JSON.parse(stored)); } catch { localStorage.removeItem("user"); }
+    }
+  }, []);
+
+  const login = async (identifier: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.post("/api/login", { identifier });
+      const loggedInUser: AuthUser = res.data.user;
+      setUser(loggedInUser);
+      localStorage.setItem("user", JSON.stringify(loggedInUser));
+      return true;
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { error?: string } } })?.response?.data?.error
+        ?? "Login failed. Please try again.";
+      setError(message);
+      return false;
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("user");
-    }
+    setUser(null);
+    localStorage.removeItem("user");
   };
 
-  const user = typeof window !== "undefined" ? localStorage.getItem("user") : null;
-
-  return {
-    user,
-    login,
-    logout,
-  };
+  return { user, login, logout, loading, error };
 }
