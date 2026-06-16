@@ -18,17 +18,17 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="mt-auto border-t border-gray-300 py-10">
+        <main className="mt-auto border-t border-gray-300 py-6 md:py-10 px-4">
             {/* Logo */}
-            <div className="flex justify-center pt-6">
-                <h1 className="text-5xl font-bold">
-                    amazon<span className="text-lg">.in</span>
+            <div className="flex justify-center pt-4 md:pt-6">
+                <h1 className="text-4xl md:text-5xl font-bold">
+                    amazon<span className="text-base md:text-lg">.in</span>
                 </h1>
             </div>
 
             {/* Login Card */}
             <div className="flex justify-center mt-6 mb-24">
-                <form onSubmit={handleSubmit} className="w-[350px] border border-[#d5d9d9] rounded-lg p-6 bg-white shadow-sm">
+                <form onSubmit={handleSubmit} className="w-full max-w-[350px] border border-[#d5d9d9] rounded-lg p-6 bg-white shadow-sm">
                     <h1 className="text-3xl font-normal mb-4">
                         Sign in or create account
                     </h1>

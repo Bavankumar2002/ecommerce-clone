@@ -70,13 +70,13 @@ export default function HeroBanner() {
     <div className="w-full bg-[#eaeded] pb-8">
       {/* Hero Slider */}
       <div
-        className="relative w-full h-[450px] flex items-center justify-between overflow-hidden transition-all duration-500"
+        className="relative w-full h-[220px] sm:h-[320px] md:h-[400px] lg:h-[450px] flex items-center justify-between overflow-hidden transition-all duration-500"
         style={{ backgroundColor: slide.bg }}
       >
         {/* Left Arrow */}
         <button
           onClick={prev}
-          className="absolute left-6 top-[28%] -translate-y-1/2 z-20 text-7xl text-gray-800 hover:text-black font-light focus:outline-none cursor-pointer select-none"
+          className="absolute left-2 md:left-6 top-[35%] sm:top-[28%] -translate-y-1/2 z-20 text-4xl md:text-7xl text-gray-800 hover:text-black font-light focus:outline-none cursor-pointer select-none"
         >
           &#8249;
         </button>
@@ -91,44 +91,44 @@ export default function HeroBanner() {
         </div>
 
         {/* Bottom Gradient Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-44 bg-gradient-to-t from-[#eaeded] to-transparent pointer-events-none z-10" />
+        <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-32 md:h-44 bg-gradient-to-t from-[#eaeded] to-transparent pointer-events-none z-10" />
 
         {/* Right Arrow */}
         <button
           onClick={next}
-          className="absolute right-6 top-[28%] -translate-y-1/2 z-20 text-7xl text-gray-800 hover:text-black font-light focus:outline-none cursor-pointer select-none"
+          className="absolute right-2 md:right-6 top-[35%] sm:top-[28%] -translate-y-1/2 z-20 text-4xl md:text-7xl text-gray-800 hover:text-black font-light focus:outline-none cursor-pointer select-none"
         >
           &#8250;
         </button>
       </div>
 
       {/* Category Cards */}
-      <div className="relative z-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 px-5 mt-[-180px]">
+      <div className="relative z-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 px-4 md:px-5 mt-[-40px] sm:mt-[-80px] md:mt-[-120px] lg:mt-[-180px]">
         {categoryCards.map((card) => {
           const isHeadphones = card.title.includes("headphones");
           return (
-            <div key={card.title} className="bg-white p-5 rounded shadow flex flex-col justify-between h-[420px] z-20">
+            <div key={card.title} className="bg-white p-4 md:p-5 rounded shadow flex flex-col justify-between h-auto md:h-[420px] min-h-[380px] md:min-h-0 z-20">
               <div>
-                <h3 className="text-[19px] font-bold mb-3 text-black leading-snug tracking-tight">{card.title}</h3>
-                <div className="grid grid-cols-2 gap-3">
+                <h3 className="text-base md:text-[19px] font-bold mb-3 text-black leading-snug tracking-tight">{card.title}</h3>
+                <div className="grid grid-cols-2 gap-2 md:gap-3">
                   {card.items.map((item) => (
                     <div key={item.label} className="flex flex-col items-start cursor-pointer group">
                       <div className="w-full overflow-hidden bg-gray-50 flex items-center justify-center rounded">
                         <img
                           src={item.img}
                           alt={item.label}
-                          className={`w-full ${isHeadphones ? 'h-[130px]' : 'h-[100px]'} object-contain object-center group-hover:scale-105 transition-transform duration-300`}
+                          className={`w-full ${isHeadphones ? 'h-[100px] sm:h-[120px] md:h-[130px]' : 'h-[80px] sm:h-[90px] md:h-[100px]'} object-contain object-center group-hover:scale-105 transition-transform duration-300`}
                         />
                       </div>
                       {!isHeadphones && (
-                        <p className="text-[11px] text-gray-800 mt-1 line-clamp-1 group-hover:text-blue-600">{item.label}</p>
+                        <p className="text-[10px] md:text-[11px] text-gray-800 mt-1 line-clamp-1 group-hover:text-blue-600">{item.label}</p>
                       )}
                     </div>
                   ))}
                 </div>
               </div>
               {!isHeadphones && (
-                <p className="text-xs text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer font-medium mt-3">
+                <p className="text-xs text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer font-medium mt-3 md:mt-0">
                   {card.link}
                 </p>
               )}

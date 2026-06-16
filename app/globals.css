@@ -79,3 +79,20 @@ textarea,
 select {
   outline: none;
 }
+
+/* Hide scrollbar utility for clean responsive horizontal scrolling */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Responsive typography and touch target helpers */
+@media (max-width: 768px) {
+  /* Prevents mobile browsers (like iOS Safari) from auto-zooming on focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
