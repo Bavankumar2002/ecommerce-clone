@@ -1,4 +1,5 @@
 import mysql from "mysql2/promise";
+import { products as seedProducts } from "./products-seed";
 
 let pool: mysql.Pool;
 
@@ -230,9 +231,44 @@ export async function initDatabase() {
         const boxId = result.insertId;
         for (const item of box.items) {
           await connection.query("INSERT INTO deal_box_items (box_id, label, img) VALUES (?, ?, ?)", [boxId, item.label, item.img]);
-        }
       }
     }
+
+    // 7. Create products table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS products (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(512) NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
+        mrp DECIMAL(10,2) DEFAULT NULL,
+        rating DECIMAL(2,1) NOT NULL DEFAULT 4.0,
+        rating_count INT NOT NULL DEFAULT 0,
+        image_url VARCHAR(512) NOT NULL,
+        images JSON DEFAULT NULL,
+        badge VARCHAR(50) DEFAULT NULL,
+        category VARCHAR(100) NOT NULL DEFAULT 'Electronics',
+        brand VARCHAR(100) DEFAULT NULL,
+        highlights TEXT DEFAULT NULL,
+        specs JSON DEFAULT NULL,
+        description TEXT DEFAULT NULL,
+        stock INT DEFAULT 10,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Seed products if empty or outdated
+    const [productsCount] = await connection.query("SELECT COUNT(*) as count FROM products") as any[];
+    if (productsCount[0].count < seedProducts.length) {
+      await connection.query("DELETE FROM products");
+      const products = seedProducts;
+      for (const p of products) {
+        await connection.query(
+          "INSERT INTO products (id, title, price, mrp, rating, rating_count, image_url, images, badge, category, brand, highlights, specs, description, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [p.id, p.title, p.price, p.mrp, p.rating, p.rating_count, p.image_url, p.images, p.badge, p.category, p.brand, p.highlights, p.specs, p.description, p.stock]
+        );
+      }
+    }
+  }
 
   } catch (error) {
     console.error("Database initialization failed:", error);

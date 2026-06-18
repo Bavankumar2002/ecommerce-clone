@@ -9,7 +9,7 @@ const sidebarSections = [
   {
     heading: "Trending",
     links: [
-      { label: "Bestsellers", href: "#" },
+      { label: "Bestsellers", href: "/products" },
       { label: "New Releases", href: "#" },
     ],
   },
@@ -293,7 +293,9 @@ export default function Navbar() {
             </li>
             <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">MX Player</li>
             <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Sell</li>
-            <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Bestsellers</li>
+            <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">
+              <Link href="/products">Bestsellers</Link>
+            </li>
             <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Today&apos;s Deals</li>
             <li className="cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">Mobiles</li>
             <li className="flex items-center gap-0.5 cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded">
