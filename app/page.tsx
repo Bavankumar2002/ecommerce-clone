@@ -63,17 +63,127 @@
 //     </div>
 //   );
 // }
-import Link from "next/link";
-import HeroBanner from "@/components/HeroBanner";
+// import Link from "next/link";
+// import HeroBanner from "@/components/HeroBanner";
 
-export default function Home() {
-  return (
+// export default function Home() {
+//   return (
 
     // <div>
     //   <h1>Welcome to Amazon Clone</h1>
     // </div>
+//     <main>
+//       <HeroBanner />
+//     </main>
+//   );
+// }
+
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import HeroBanner from "@/components/HeroBanner";
+import ProductGrid from "@/components/ProductGrid";
+import api from "@/lib/api";
+
+interface Product {
+  id: number;
+  title: string;
+  price: number | string;
+  mrp?: number | string;
+  rating: number;
+  ratingCount: number;
+  imageUrl: string;
+  badge?: string;
+  category: string;
+}
+
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      setLoadingProducts(true);
+      try {
+        const res = await api.get("/api/products");
+        if (res.data.success) setProducts(res.data.products);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoadingProducts(false);
+      }
+    }
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) setActiveCategory(cat);
+  }, [searchParams]);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const category = (e as CustomEvent).detail.category;
+      setActiveCategory(category);
+      setTimeout(() => {
+        document.getElementById("product-section")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    };
+    window.addEventListener("navbar-category", handler);
+    return () => window.removeEventListener("navbar-category", handler);
+  }, []);
+
+  const filteredProducts = activeCategory
+    ? products.filter((p) => p.category === activeCategory)
+    : [];
+
+  return (
     <main>
       <HeroBanner />
+
+      {activeCategory && (
+        <div id="product-section" className="bg-[#EAEDED] px-4 py-8">
+          <div className="max-w-[1500px] mx-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900">{activeCategory}</h2>
+              <button
+                onClick={() => setActiveCategory(null)}
+                className="text-sm text-[#007185] hover:text-[#C45500] hover:underline cursor-pointer bg-transparent border-none outline-none"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            {loadingProducts ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white rounded shadow-sm border border-gray-200">
+                <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-sm text-gray-500 mt-4">Loading products...</p>
+              </div>
+            ) : filteredProducts.length > 0 ? (
+              <ProductGrid
+                products={filteredProducts}
+                title={`Bestsellers in ${activeCategory}`}
+                seeMoreLink="/products"
+              />
+            ) : (
+              <div className="bg-white p-8 rounded border border-gray-200 text-center shadow-sm">
+                <p className="text-gray-500 text-sm">No products found in this category.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#EAEDED]" />}>
+      <HomeContent />
+    </Suspense>
   );
 }

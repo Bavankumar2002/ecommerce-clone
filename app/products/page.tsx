@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import api from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
 
@@ -44,6 +45,7 @@ export default function ProductsPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"bestsellers" | "releases">("bestsellers");
   const [selectedDept, setSelectedDept] = useState("Electronics");
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -64,6 +66,13 @@ export default function ProductsPage() {
     }
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const category = searchParams.get("category");
+    if (category) {
+      setSelectedDept(category);
+    }
+  }, [searchParams]);
 
   const filteredProducts = products.filter((p) => p.category === selectedDept);
 
