@@ -21,14 +21,16 @@ export function useAuth() {
     }
   }, []);
 
-  const login = async (identifier: string): Promise<{ success: boolean; exists: boolean }> => {
+  const login = async (identifier: string, password?: string): Promise<{ success: boolean; exists: boolean }> => {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.post("/api/login", { identifier });
-      const loggedInUser: AuthUser = res.data.user;
-      setUser(loggedInUser);
-      localStorage.setItem("user", JSON.stringify(loggedInUser));
+      const res = await api.post("/api/login", { identifier, password });
+      if (password !== undefined) {
+        const loggedInUser: AuthUser = res.data.user;
+        setUser(loggedInUser);
+        localStorage.setItem("user", JSON.stringify(loggedInUser));
+      }
       return { success: true, exists: true };
     } catch (err: any) {
       const isNotFound = err?.response?.status === 404 || err?.response?.data?.exists === false;
@@ -40,11 +42,11 @@ export function useAuth() {
     }
   };
 
-  const register = async (identifier: string): Promise<boolean> => {
+  const register = async (identifier: string, password?: string): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.post("/api/register", { identifier });
+      const res = await api.post("/api/register", { identifier, password });
       const registeredUser: AuthUser = res.data.user;
       setUser(registeredUser);
       localStorage.setItem("user", JSON.stringify(registeredUser));

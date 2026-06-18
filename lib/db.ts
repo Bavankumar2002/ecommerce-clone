@@ -31,9 +31,20 @@ export async function initDatabase() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         email VARCHAR(255) UNIQUE DEFAULT NULL,
         phone VARCHAR(15) UNIQUE DEFAULT NULL,
+        password VARCHAR(255) DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Ensure password column exists (in case users table already existed without it)
+    try {
+      const [columns] = await connection.query("SHOW COLUMNS FROM users LIKE 'password'") as any[];
+      if (columns.length === 0) {
+        await connection.query("ALTER TABLE users ADD COLUMN password VARCHAR(255) DEFAULT NULL");
+      }
+    } catch (colErr) {
+      console.warn("Could not check/add password column in users table:", colErr);
+    }
 
     // 2. Create banner_slides table
     await connection.query(`

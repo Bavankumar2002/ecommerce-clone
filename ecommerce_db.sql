@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
   id           INT AUTO_INCREMENT PRIMARY KEY,
   email        VARCHAR(255) UNIQUE DEFAULT NULL,
   phone        VARCHAR(15) UNIQUE DEFAULT NULL,
+  password     VARCHAR(255) DEFAULT NULL,
   created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -127,6 +128,7 @@ INSERT IGNORE INTO deal_box_items (id, box_id, label, img) VALUES
 (24, 4, 'Handbags', 'https://images-eu.ssl-images-amazon.com/images/G/31/IMG15/Irfan/GATEWAY/MSO/186x116---wm._SY116_CB667322346_.jpg'),
 (25, 4, 'Sunglasses', 'https://images-eu.ssl-images-amazon.com/images/G/31/IMG15/Irfan/GATEWAY/MSO/Appliances-QC-PC-186x116--B08RDL6H79._SY116_CB667322346_.jpg');
 
-
+ALTER TABLE users
+ADD COLUMN password VARCHAR(255) DEFAULT NULL;
 
 select * from users;

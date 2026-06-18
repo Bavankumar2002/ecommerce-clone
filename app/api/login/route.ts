@@ -4,7 +4,7 @@ import pool, { initDatabase } from "@/lib/db";
 export async function POST(request: Request) {
   try {
     await initDatabase();
-    const { identifier } = await request.json();
+    const { identifier, password } = await request.json();
 
     if (!identifier || typeof identifier !== "string") {
       return NextResponse.json(
@@ -21,8 +21,35 @@ export async function POST(request: Request) {
       [trimmed, trimmed]
     ) as any[];
 
-    if (rows.length > 0) {
-      const user = rows[0];
+    if (rows.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          exists: false,
+          error: "User not found. Please create an account.",
+        },
+        { status: 404 }
+      );
+    }
+
+    const user = rows[0];
+
+    // Case 1: Check existence only (step 1 of login)
+    if (password === undefined) {
+      return NextResponse.json({
+        success: true,
+        exists: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          phone: user.phone,
+        },
+      });
+    }
+
+    // Case 2: Verify password (step 2 of login)
+    const storedPassword = user.password || "";
+    if (storedPassword === password) {
       return NextResponse.json({
         success: true,
         exists: true,
@@ -36,10 +63,10 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          exists: false,
-          error: "User not found. Please create an account.",
+          exists: true,
+          error: "To sign in, please enter the correct password.",
         },
-        { status: 404 }
+        { status: 401 }
       );
     }
   } catch (error: any) {

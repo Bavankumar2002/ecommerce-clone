@@ -9,6 +9,7 @@ function CreateAccountContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [identifier, setIdentifier] = useState("");
+    const [password, setPassword] = useState("");
 
     useEffect(() => {
         const idParam = searchParams.get("identifier");
@@ -20,7 +21,7 @@ function CreateAccountContent() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (identifier.trim()) {
-            const success = await register(identifier.trim());
+            const success = await register(identifier.trim(), password);
             if (success) {
                 router.push("/");
             }
@@ -55,19 +56,32 @@ function CreateAccountContent() {
                         className="w-full h-8 border border-[#888c8c] rounded px-3 text-black focus:border-[#007185] focus:ring-2 focus:ring-[#c8f3fa]"
                     />
 
+                    <label className="block text-sm font-bold mt-4 mb-2">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        required
+                        placeholder="At least 6 characters"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full h-8 border border-[#888c8c] rounded px-3 text-black focus:border-[#007185] focus:ring-2 focus:ring-[#c8f3fa]"
+                    />
+
                     {error && (
-                        <p className="text-red-600 text-xs mt-1">{error}</p>
+                        <p className="text-red-600 text-xs mt-2">{error}</p>
                     )}
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full mt-4 bg-[#ffd814] hover:bg-[#f7ca00] h-8 rounded-full text-sm text-black cursor-pointer disabled:opacity-60"
+                        className="w-full mt-6 bg-[#ffd814] hover:bg-[#f7ca00] h-8 rounded-full text-sm text-black cursor-pointer disabled:opacity-60"
                     >
                         {loading ? "Please wait..." : "Create Account"}
                     </button>
 
-                    <p className="text-sm mt-4">
+                    <p className="text-sm mt-4 text-gray-700">
                         By continuing, you agree to Amazon&apos;s{" "}
                         <a href="#" className="text-blue-600">
                             Conditions of Use
