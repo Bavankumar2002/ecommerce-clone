@@ -21,7 +21,7 @@ export function useAuth() {
     }
   }, []);
 
-  const login = async (identifier: string): Promise<boolean> => {
+  const login = async (identifier: string): Promise<{ success: boolean; exists: boolean }> => {
     setLoading(true);
     setError(null);
     try {
@@ -29,11 +29,28 @@ export function useAuth() {
       const loggedInUser: AuthUser = res.data.user;
       setUser(loggedInUser);
       localStorage.setItem("user", JSON.stringify(loggedInUser));
+      return { success: true, exists: true };
+    } catch (err: any) {
+      const isNotFound = err?.response?.status === 404 || err?.response?.data?.exists === false;
+      const message = err?.response?.data?.error ?? "Login failed. Please try again.";
+      setError(message);
+      return { success: false, exists: !isNotFound };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async (identifier: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.post("/api/register", { identifier });
+      const registeredUser: AuthUser = res.data.user;
+      setUser(registeredUser);
+      localStorage.setItem("user", JSON.stringify(registeredUser));
       return true;
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { error?: string } } })?.response?.data?.error
-        ?? "Login failed. Please try again.";
+    } catch (err: any) {
+      const message = err?.response?.data?.error ?? "Registration failed. Please try again.";
       setError(message);
       return false;
     } finally {
@@ -46,5 +63,5 @@ export function useAuth() {
     localStorage.removeItem("user");
   };
 
-  return { user, login, logout, loading, error };
+  return { user, login, register, logout, loading, error };
 }

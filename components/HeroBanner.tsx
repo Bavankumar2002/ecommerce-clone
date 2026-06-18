@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import api from "@/lib/api";
 
-const bannerSlides = [
+const staticBannerSlides = [
   {
     id: 1,
     bg: "#fce4ec",
@@ -40,7 +41,7 @@ const bannerSlides = [
   },
 ];
 
-const categoryCards = [
+const staticCategoryCards = [
   {
     title: "Appliances for your home | Up to 55% off",
     items: [
@@ -83,8 +84,7 @@ const categoryCards = [
   },
 ];
 
-// ✅ NEW: Scrollable product showcase boxes (like the motorcycle section in your screenshot)
-const dealBoxes = [
+const staticDealBoxes = [
   {
     id: 1,
     title: "Starting ₹70,348 | Engineered for the road",
@@ -146,11 +146,36 @@ const dealBoxes = [
 
 export default function HeroBanner() {
   const [current, setCurrent] = useState(0);
+  const [bannerSlides, setBannerSlides] = useState(staticBannerSlides);
+  const [categoryCards, setCategoryCards] = useState(staticCategoryCards);
+  const [dealBoxes, setDealBoxes] = useState(staticDealBoxes);
+
+  useEffect(() => {
+    async function fetchHomeData() {
+      try {
+        const res = await api.get("/api/home-data");
+        if (res.data.success) {
+          if (res.data.bannerSlides && res.data.bannerSlides.length > 0) {
+            setBannerSlides(res.data.bannerSlides);
+          }
+          if (res.data.categoryCards && res.data.categoryCards.length > 0) {
+            setCategoryCards(res.data.categoryCards);
+          }
+          if (res.data.dealBoxes && res.data.dealBoxes.length > 0) {
+            setDealBoxes(res.data.dealBoxes);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load home data from DB, using static fallback:", err);
+      }
+    }
+    fetchHomeData();
+  }, []);
 
   const prev = () => setCurrent((c) => (c === 0 ? bannerSlides.length - 1 : c - 1));
   const next = () => setCurrent((c) => (c === bannerSlides.length - 1 ? 0 : c + 1));
 
-  const slide = bannerSlides[current];
+  const slide = bannerSlides[current] || staticBannerSlides[0];
 
   return (
     <div className="w-full bg-[#eaeded] pb-8">

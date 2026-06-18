@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart, MapPin, Search, X, ChevronRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const sidebarSections = [
   {
@@ -61,6 +62,12 @@ const sidebarSections = [
 
 export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -85,7 +92,9 @@ export default function Navbar() {
               <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
             </svg>
           </div>
-          <span className="text-base font-bold">Hello, sign in</span>
+          <span className="text-base font-bold">
+            {mounted && user ? `Hello, ${user.email || user.phone}` : "Hello, sign in"}
+          </span>
           <button
             onClick={() => setSidebarOpen(false)}
             className="ml-auto p-1 hover:bg-white/10 rounded transition-colors"
@@ -131,13 +140,25 @@ export default function Navbar() {
 
           {/* Sign In link at bottom of Help & Settings */}
           <div className="px-4 py-2.5">
-            <Link
-              href="/login"
-              onClick={() => setSidebarOpen(false)}
-              className="text-sm text-gray-800 hover:bg-gray-100 block py-1"
-            >
-              Sign in
-            </Link>
+            {mounted && user ? (
+              <button
+                onClick={() => {
+                  logout();
+                  setSidebarOpen(false);
+                }}
+                className="text-sm text-gray-800 hover:bg-gray-100 block py-1 text-left w-full cursor-pointer bg-transparent border-none outline-none font-medium"
+              >
+                Sign out
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setSidebarOpen(false)}
+                className="text-sm text-gray-800 hover:bg-gray-100 block py-1"
+              >
+                Sign in
+              </Link>
+            )}
           </div>
 
           <div className="h-8" />
@@ -168,11 +189,16 @@ export default function Navbar() {
 
             {/* Mobile Actions: Sign-in & Cart */}
             <div className="flex items-center gap-1.5 md:hidden">
-              <Link href="/login" className="cursor-pointer hover:border border-transparent hover:border-white p-1.5 rounded text-xs flex items-center gap-0.5">
-                <span className="font-semibold text-gray-200">Sign in</span>
-                <span className="text-[8px] text-gray-400">▼</span>
-              </Link>
-
+              {mounted && user ? (
+                <button onClick={logout} className="cursor-pointer hover:border border-transparent hover:border-white p-1.5 rounded text-xs flex items-center gap-0.5 bg-transparent text-white font-semibold outline-none border-none">
+                  <span className="font-semibold text-gray-200">Sign out</span>
+                </button>
+              ) : (
+                <Link href="/login" className="cursor-pointer hover:border border-transparent hover:border-white p-1.5 rounded text-xs flex items-center gap-0.5">
+                  <span className="font-semibold text-gray-200">Sign in</span>
+                  <span className="text-[8px] text-gray-400">▼</span>
+                </Link>
+              )}
               <Link href="/cart" className="flex items-end relative cursor-pointer hover:border border-transparent hover:border-white p-1.5 rounded">
                 <div className="relative flex items-center justify-center">
                   <span className="absolute -top-1.5 left-[50%] -translate-x-1/2 text-orange-500 font-bold text-sm leading-none bg-[#131921] px-0.5 rounded-full">0</span>
@@ -215,13 +241,23 @@ export default function Navbar() {
           </div>
 
           {/* Account (Desktop Only) */}
-          <Link href="/login" className="hidden md:block cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
-            <p className="text-xs text-gray-300">Hello, sign in</p>
-            <div className="flex items-center gap-0.5">
-              <span className="text-sm font-bold">Account & Lists</span>
-              <span className="text-[8px] text-gray-300">▼</span>
+          {mounted && user ? (
+            <div onClick={logout} className="hidden md:block cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
+              <p className="text-xs text-gray-300">Hello, {user.email || user.phone}</p>
+              <div className="flex items-center gap-0.5">
+                <span className="text-sm font-bold">Sign out</span>
+                <span className="text-[8px] text-gray-300">▼</span>
+              </div>
             </div>
-          </Link>
+          ) : (
+            <Link href="/login" className="hidden md:block cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
+              <p className="text-xs text-gray-300">Hello, sign in</p>
+              <div className="flex items-center gap-0.5">
+                <span className="text-sm font-bold">Account & Lists</span>
+                <span className="text-[8px] text-gray-300">▼</span>
+              </div>
+            </Link>
+          )}
 
           {/* Orders (Desktop Only) */}
           <div className="hidden md:block cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">

@@ -109,8 +109,12 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (email.trim()) {
-            const success = await login(email);
-            if (success) router.push("/");
+            const result = await login(email);
+            if (result.success) {
+                router.push("/");
+            } else if (!result.exists) {
+                router.push(`/create-account?identifier=${encodeURIComponent(email.trim())}`);
+            }
         }
     };
 
