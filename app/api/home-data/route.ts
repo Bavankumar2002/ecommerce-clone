@@ -28,24 +28,54 @@ export async function GET() {
       });
     }
 
-    // 3. Fetch deal boxes
-    const [boxes] = await pool.query(
-      "SELECT id, title, see_all_link as seeAllLink, see_all_label as seeAllLabel FROM deal_boxes"
-    ) as any[];
+    // 3. Fetch deal boxes dynamically from products table
+    const categoriesForDeals = [
+      {
+        id: 1,
+        title: "Starting ₹70,348 | Engineered for the road",
+        categoryName: "Car & Motorbike",
+        seeAllLink: "/products?category=Car%20%26%20Motorbike",
+        seeAllLabel: "See all offers"
+      },
+      {
+        id: 2,
+        title: "Min. 30% off | Curated collections from Small Businesses",
+        categoryName: "Home & Kitchen",
+        seeAllLink: "/products?category=Home%20%26%20Kitchen",
+        seeAllLabel: "See more"
+      },
+      {
+        id: 3,
+        title: "Up to 60% off | Top deals on Electronics",
+        categoryName: "Electronics",
+        seeAllLink: "/products?category=Electronics",
+        seeAllLabel: "See all deals"
+      },
+      {
+        id: 4,
+        title: "Fashion | Trending styles at great prices",
+        categoryName: "Clothing & Accessories",
+        seeAllLink: "/products?category=Clothing%20%26%20Accessories",
+        seeAllLabel: "Explore all"
+      }
+    ];
 
     const dealBoxes = [];
-    for (const box of boxes) {
+    for (const cat of categoriesForDeals) {
       const [items] = await pool.query(
-        "SELECT label, img FROM deal_box_items WHERE box_id = ?",
-        [box.id]
+        "SELECT id, title as label, image_url as img FROM products WHERE category = ? LIMIT 8",
+        [cat.categoryName]
       ) as any[];
-      dealBoxes.push({
-        id: box.id,
-        title: box.title,
-        seeAllLink: box.seeAllLink,
-        seeAllLabel: box.seeAllLabel,
-        items: items,
-      });
+
+      if (items.length > 0) {
+        dealBoxes.push({
+          id: cat.id,
+          title: cat.title,
+          seeAllLink: cat.seeAllLink,
+          seeAllLabel: cat.seeAllLabel,
+          items: items,
+        });
+      }
     }
 
     return NextResponse.json({

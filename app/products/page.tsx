@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import api from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
@@ -39,7 +39,7 @@ const departments = [
   "Jewellery",
 ];
 
-export default function ProductsPage() {
+function ProductsList() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -202,5 +202,18 @@ export default function ProductsPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center py-20 bg-[#EAEDED] min-h-screen">
+        <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm text-gray-500 mt-4">Loading products page...</p>
+      </div>
+    }>
+      <ProductsList />
+    </Suspense>
   );
 }

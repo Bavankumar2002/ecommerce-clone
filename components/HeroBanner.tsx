@@ -1,7 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import api from "@/lib/api";
+
+interface DealItem {
+  id?: number;
+  label: string;
+  img: string;
+}
+
+interface DealBox {
+  id: number;
+  title: string;
+  seeAllLink: string;
+  seeAllLabel: string;
+  items: DealItem[];
+}
 
 const staticBannerSlides = [
   {
@@ -144,11 +160,32 @@ const staticDealBoxes = [
   },
 ];
 
+const getCategoryFromText = (text: string) => {
+  const normalized = text.toLowerCase();
+  if (/headphones|earbuds|neckband|smartphones|laptops|electronics|fashion|clothing|accessories/.test(normalized)) {
+    return "Electronics";
+  }
+  if (/home|kitchen|appliances|cleaning|bathroom|wallpapers|furniture|storage|lighting/.test(normalized)) {
+    return "Home & Kitchen";
+  }
+  if (/fashion|clothing|accessories|handbags|kurtas|sneakers/.test(normalized)) {
+    return "Clothing & Accessories";
+  }
+  if (/car|motorbike|industrial|road|engineered/.test(normalized)) {
+    return "Car & Motorbike";
+  }
+  return "";
+};
+
+const buildProductListUrl = (category: string) =>
+  category ? `/products?category=${encodeURIComponent(category)}` : "/products";
+
 export default function HeroBanner() {
+  const router = useRouter();
   const [current, setCurrent] = useState(0);
   const [bannerSlides, setBannerSlides] = useState(staticBannerSlides);
   const [categoryCards, setCategoryCards] = useState(staticCategoryCards);
-  const [dealBoxes, setDealBoxes] = useState(staticDealBoxes);
+  const [dealBoxes, setDealBoxes] = useState<DealBox[]>(staticDealBoxes);
 
   useEffect(() => {
     async function fetchHomeData() {
@@ -222,26 +259,37 @@ export default function HeroBanner() {
               <div>
                 <h3 className="text-base md:text-[19px] font-bold mb-3 text-black leading-snug tracking-tight">{card.title}</h3>
                 <div className="grid grid-cols-2 gap-2 md:gap-3">
-                  {card.items.map((item) => (
-                    <div key={item.label} className="flex flex-col items-start cursor-pointer group">
-                      <div className="w-full overflow-hidden bg-gray-50 flex items-center justify-center rounded">
-                        <img
-                          src={item.img}
-                          alt={item.label}
-                          className={`w-full ${isHeadphones ? 'h-[100px] sm:h-[120px] md:h-[130px]' : 'h-[80px] sm:h-[90px] md:h-[100px]'} object-contain object-center group-hover:scale-105 transition-transform duration-300`}
-                        />
-                      </div>
-                      {!isHeadphones && (
-                        <p className="text-[10px] md:text-[11px] text-gray-800 mt-1 line-clamp-1 group-hover:text-blue-600">{item.label}</p>
-                      )}
-                    </div>
-                  ))}
+                  {card.items.map((item) => {
+                    const category = getCategoryFromText(card.title) || getCategoryFromText(item.label);
+                    const href = buildProductListUrl(category);
+                    return (
+                      <Link
+                        key={item.label}
+                        href={href}
+                        className="flex flex-col items-start group"
+                      >
+                        <div className="w-full overflow-hidden bg-gray-50 flex items-center justify-center rounded">
+                          <img
+                            src={item.img}
+                            alt={item.label}
+                            className={`w-full ${isHeadphones ? 'h-[100px] sm:h-[120px] md:h-[130px]' : 'h-[80px] sm:h-[90px] md:h-[100px]'} object-contain object-center group-hover:scale-105 transition-transform duration-300`}
+                          />
+                        </div>
+                        {!isHeadphones && (
+                          <p className="text-[10px] md:text-[11px] text-gray-800 mt-1 line-clamp-1 group-hover:text-blue-600">{item.label}</p>
+                        )}
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
               {!isHeadphones && (
-                <p className="text-xs text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer font-medium mt-3 md:mt-0">
+                <Link
+                  href={buildProductListUrl(getCategoryFromText(card.title))}
+                  className="text-xs text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer font-medium mt-3 md:mt-0"
+                >
                   {card.link}
-                </p>
+                </Link>
               )}
             </div>
           );
@@ -269,6 +317,7 @@ export default function HeroBanner() {
                 {box.items.map((item, idx) => (
                   <div
                     key={idx}
+                    onClick={() => item.id && router.push(`/products/${item.id}`)}
                     className="flex flex-col items-center cursor-pointer group shrink-0 w-[140px] sm:w-[160px] md:w-[180px]"
                   >
                     <div className="w-full h-[110px] sm:h-[130px] md:h-[150px] bg-gray-50 rounded flex items-center justify-center overflow-hidden border border-gray-100">
