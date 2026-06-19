@@ -135,7 +135,7 @@ export default function ProductDetailPage() {
       <div className="bg-gray-50 border-b border-gray-200 py-2.5 px-6">
         <div className="max-w-7xl mx-auto flex items-center text-xs text-gray-600 gap-1.5 overflow-x-auto whitespace-nowrap">
           <Link href="/products" className="hover:text-[#c45500] hover:underline">
-            Bestsellers
+            Products
           </Link>
           <span>›</span>
           <span className="hover:text-[#c45500] cursor-pointer hover:underline">

@@ -322,11 +322,33 @@ import { useRouter, usePathname } from "next/navigation";
 import { ShoppingCart, MapPin, Search, X, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
+const departments = [
+  "Amazon Launchpad",
+  "Amazon Renewed",
+  "Apps & Games",
+  "Baby Products",
+  "Bags, Wallets and Luggage",
+  "Beauty",
+  "Books",
+  "Car & Motorbike",
+  "Clothing & Accessories",
+  "Computers & Accessories",
+  "Electronics",
+  "Garden & Outdoors",
+  "Gift Cards",
+  "Grocery & Gourmet Foods",
+  "Health & Personal Care",
+  "Home & Kitchen",
+  "Home Improvement",
+  "Industrial & Scientific",
+  "Jewellery",
+];
+
 const sidebarSections = [
   {
     heading: "Trending",
     links: [
-      { label: "Bestsellers", href: "/products" },
+      { label: "Bestsellers", href: "/bestsellers" },
       { label: "New Releases", href: "#" },
     ],
   },
@@ -380,7 +402,7 @@ const sidebarSections = [
 const navItems = [
   { label: "MX Player", category: null },
   { label: "Sell", category: null },
-  { label: "Bestsellers", category: "Electronics" },
+  { label: "Bestsellers", href: "/bestsellers", category: null },
   { label: "Today's Deals", category: "Gift Cards" },
   { label: "Mobiles", category: "Computers & Accessories" },
   { label: "Prime", category: null, hasArrow: true },
@@ -399,13 +421,39 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Search Bar States
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchCategory, setSearchCategory] = useState("All Departments");
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("search") || "";
+      const cat = params.get("category") || "All Departments";
+      setSearchQuery(q);
+      setSearchCategory(cat);
+    }
+  }, [pathname]);
+
   const handleNavItemClick = (category: string | null) => {
     if (!category) return;
     router.push(`/products?category=${encodeURIComponent(category)}`);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchQuery.trim()) {
+      params.set("search", searchQuery.trim());
+    }
+    if (searchCategory !== "All Departments") {
+      params.set("category", searchCategory);
+    }
+    router.push(`/products?${params.toString()}`);
   };
 
   return (
@@ -527,15 +575,30 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="flex flex-1 items-stretch h-10 w-full rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-orange-500">
-            <select className="bg-gray-200 text-black px-2 md:px-3 rounded-l-md outline-none text-xs border-r border-gray-300 cursor-pointer hover:bg-gray-300">
-              <option>All</option>
+          <form onSubmit={handleSearchSubmit} className="flex flex-1 items-stretch h-10 w-full rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-orange-500">
+            <select
+              value={searchCategory}
+              onChange={(e) => setSearchCategory(e.target.value)}
+              className="bg-gray-200 text-black px-2 md:px-3 rounded-l-md outline-none text-xs border-r border-gray-300 cursor-pointer hover:bg-gray-300 max-w-[120px] md:max-w-none font-semibold"
+            >
+              <option value="All Departments">All</option>
+              {departments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
             </select>
-            <input type="text" placeholder="Search Amazon.in" className="bg-white flex-1 px-3 md:px-4 text-black outline-none text-sm w-full" />
-            <button className="bg-amber-500 hover:bg-amber-600 px-4 md:px-6 rounded-r-md flex items-center justify-center cursor-pointer transition-colors shrink-0">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search Amazon.in"
+              className="bg-white flex-1 px-3 md:px-4 text-black outline-none text-sm w-full"
+            />
+            <button type="submit" className="bg-amber-500 hover:bg-amber-600 px-4 md:px-6 rounded-r-md flex items-center justify-center cursor-pointer transition-colors shrink-0 border-none outline-none">
               <Search className="text-black" size={20} />
             </button>
-          </div>
+          </form>
 
           <div className="hidden lg:flex items-center gap-1 cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
             <span className="text-lg">🇮🇳</span>
@@ -589,7 +652,15 @@ export default function Navbar() {
             </li>
             {navItems.map((item) => (
               <li key={item.label}>
-                {item.category ? (
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    className="flex items-center gap-0.5 cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded text-white text-sm font-medium text-decoration-none"
+                  >
+                    {item.label}
+                    {item.hasArrow && <span className="text-[8px] text-gray-300">▼</span>}
+                  </Link>
+                ) : item.category ? (
                   <button
                     onClick={() => handleNavItemClick(item.category)}
                     className="flex items-center gap-0.5 cursor-pointer hover:border border-transparent hover:border-white px-2 py-1 rounded bg-transparent text-white text-sm font-medium border-none outline-none"
