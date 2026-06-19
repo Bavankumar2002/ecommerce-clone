@@ -5,6 +5,7 @@ import api from "@/lib/api";
 
 export interface AuthUser {
   id: number;
+  name: string | null;
   email: string | null;
   phone: string | null;
 }
@@ -42,11 +43,11 @@ export function useAuth() {
     }
   };
 
-  const register = async (identifier: string, password?: string): Promise<boolean> => {
+  const register = async (name: string, identifier: string, password?: string): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.post("/api/register", { identifier, password });
+      const res = await api.post("/api/register", { name, identifier, password });
       const registeredUser: AuthUser = res.data.user;
       setUser(registeredUser);
       localStorage.setItem("user", JSON.stringify(registeredUser));

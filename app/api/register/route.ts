@@ -4,7 +4,7 @@ import pool, { initDatabase } from "@/lib/db";
 export async function POST(request: Request) {
   try {
     await initDatabase();
-    const { identifier, password } = await request.json();
+    const { name, identifier, password } = await request.json();
 
     if (!identifier || typeof identifier !== "string") {
       return NextResponse.json(
@@ -38,10 +38,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Insert user with password
+    // Insert user with name and password
     const [result] = await pool.query(
-      "INSERT INTO users (email, phone, password) VALUES (?, ?, ?)",
-      [emailVal, phoneVal, password || ""]
+      "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)",
+      [name || null, emailVal, phoneVal, password || ""]
     ) as any;
 
     const newUserId = result.insertId;
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
       success: true,
       user: {
         id: newUserId,
+        name: name || null,
         email: emailVal,
         phone: phoneVal,
       },

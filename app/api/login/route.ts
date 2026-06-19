@@ -41,6 +41,7 @@ export async function POST(request: Request) {
         exists: true,
         user: {
           id: user.id,
+          name: user.name,
           email: user.email,
           phone: user.phone,
         },
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
         exists: true,
         user: {
           id: user.id,
+          name: user.name,
           email: user.email,
           phone: user.phone,
         },

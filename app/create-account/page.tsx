@@ -8,6 +8,7 @@ function CreateAccountContent() {
     const { register, loading, error } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [name, setName] = useState("");
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
 
@@ -20,8 +21,8 @@ function CreateAccountContent() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (identifier.trim()) {
-            const success = await register(identifier.trim(), password);
+        if (name.trim() && identifier.trim()) {
+            const success = await register(name.trim(), identifier.trim(), password);
             if (success) {
                 router.push("/");
             }
@@ -43,6 +44,19 @@ function CreateAccountContent() {
                     <h1 className="text-3xl font-normal mb-4">
                         Create account
                     </h1>
+
+                    <label className="block text-sm font-bold mb-2">
+                        Your name
+                    </label>
+
+                    <input
+                        type="text"
+                        required
+                        placeholder="First and last name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full h-8 border border-[#888c8c] rounded px-3 text-black focus:border-[#007185] focus:ring-2 focus:ring-[#c8f3fa] mb-4"
+                    />
 
                     <label className="block text-sm font-bold mb-2">
                         Mobile number or email

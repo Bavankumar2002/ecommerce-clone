@@ -4,11 +4,11 @@ import { products as seedProducts } from "./products-seed";
 let pool: mysql.Pool;
 
 const dbConfig = {
-  host: process.env.DB_HOST || "localhost",
-  port: parseInt(process.env.DB_PORT || "3306", 10),
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "Bavankumar@123",
-  database: process.env.DB_NAME || "ecommerce_db",
+  host: (process.env.DB_HOST || "localhost").trim(),
+  port: parseInt((process.env.DB_PORT || "3306").trim(), 10),
+  user: (process.env.DB_USER || "root").trim(),
+  password: (process.env.DB_PASSWORD || "Bavankumar@123").trim(),
+  database: (process.env.DB_NAME || "ecommerce_db").trim(),
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -30,12 +30,23 @@ export async function initDatabase() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) DEFAULT NULL,
         email VARCHAR(255) UNIQUE DEFAULT NULL,
         phone VARCHAR(15) UNIQUE DEFAULT NULL,
         password VARCHAR(255) DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Ensure name column exists (in case users table already existed without it)
+    try {
+      const [columns] = await connection.query("SHOW COLUMNS FROM users LIKE 'name'") as any[];
+      if (columns.length === 0) {
+        await connection.query("ALTER TABLE users ADD COLUMN name VARCHAR(255) DEFAULT NULL");
+      }
+    } catch (colErr) {
+      console.warn("Could not check/add name column in users table:", colErr);
+    }
 
     // Ensure password column exists (in case users table already existed without it)
     try {

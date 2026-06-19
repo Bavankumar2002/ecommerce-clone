@@ -477,7 +477,7 @@ export default function Navbar() {
             </svg>
           </div>
           <span className="text-base font-bold">
-            {mounted && user ? `Hello, ${user.email || user.phone}` : "Hello, sign in"}
+            {mounted && user ? `Hello, ${user.name || user.email || user.phone}` : "Hello, sign in"}
           </span>
           <button
             onClick={() => setSidebarOpen(false)}
@@ -607,7 +607,7 @@ export default function Navbar() {
 
           {mounted && user ? (
             <div onClick={logout} className="hidden md:block cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
-              <p className="text-xs text-gray-300">Hello, {user.email || user.phone}</p>
+              <p className="text-xs text-gray-300">Hello, {user.name || user.email || user.phone}</p>
               <div className="flex items-center gap-0.5">
                 <span className="text-sm font-bold">Sign out</span>
                 <span className="text-[8px] text-gray-300">▼</span>
