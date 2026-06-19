@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import api from "@/lib/api";
 import { Star, MapPin, ShieldCheck, RefreshCw, Truck, Heart, Share2 } from "lucide-react";
@@ -27,6 +27,7 @@ interface Product {
 
 export default function ProductDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
@@ -132,6 +133,20 @@ export default function ProductDetailPage() {
       }, quantity);
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 3000);
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (product) {
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        brand: product.brand,
+        stock: product.stock
+      }, quantity);
+      router.push("/checkout");
     }
   };
 
@@ -364,7 +379,10 @@ export default function ProductDetailPage() {
                 </button>
 
                 {/* Buy Now button */}
-                <button className="w-full py-2 px-4 rounded-full text-xs md:text-sm font-semibold text-white bg-gradient-to-b from-[#F3A847] to-[#E47911] border-[#a88734] hover:from-[#f19e38] hover:to-[#d66f0a] active:from-[#e47911] active:to-[#cb6700] shadow-sm cursor-pointer transition-all">
+                <button
+                  onClick={handleBuyNow}
+                  className="w-full py-2 px-4 rounded-full text-xs md:text-sm font-semibold text-white bg-gradient-to-b from-[#F3A847] to-[#E47911] border-[#a88734] hover:from-[#f19e38] hover:to-[#d66f0a] active:from-[#e47911] active:to-[#cb6700] shadow-sm cursor-pointer transition-all"
+                >
                   Buy Now
                 </button>
               </div>
