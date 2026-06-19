@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import api from "@/lib/api";
 import { Star, MapPin, ShieldCheck, RefreshCw, Truck, Heart, Share2 } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
 
 interface Product {
   id: number;
@@ -26,6 +27,7 @@ interface Product {
 
 export default function ProductDetailPage() {
   const { id } = useParams();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -119,8 +121,18 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 3000);
+    if (product) {
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        brand: product.brand,
+        stock: product.stock
+      }, quantity);
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 3000);
+    }
   };
 
   // Get gallery list (combining primary image with optional dynamic images array)

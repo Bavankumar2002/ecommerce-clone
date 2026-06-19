@@ -202,6 +202,34 @@ export async function initDatabase() {
         );
       }
     }
+
+    // 8. Create orders table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS orders (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        total DECIMAL(10,2) NOT NULL,
+        shipping_name VARCHAR(255) NOT NULL,
+        shipping_address VARCHAR(512) NOT NULL,
+        shipping_city VARCHAR(100) NOT NULL,
+        shipping_zip VARCHAR(20) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+
+    // 9. Create order_items table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS order_items (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        order_id INT NOT NULL,
+        product_id INT NOT NULL,
+        quantity INT NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
+        FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+      )
+    `);
   } catch (error) {
     console.error("Database initialization failed:", error);
     throw error;

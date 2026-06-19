@@ -321,6 +321,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { ShoppingCart, MapPin, Search, X, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 
 const departments = [
   "Amazon Launchpad",
@@ -417,6 +418,7 @@ const navItems = [
 export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
+  const { cartCount } = useCart();
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -560,7 +562,7 @@ export default function Navbar() {
               )}
               <Link href="/cart" className="flex items-end relative cursor-pointer hover:border border-transparent hover:border-white p-1.5 rounded">
                 <div className="relative flex items-center justify-center">
-                  <span className="absolute -top-1.5 left-[50%] -translate-x-1/2 text-orange-500 font-bold text-sm leading-none bg-[#131921] px-0.5 rounded-full">0</span>
+                  <span className="absolute -top-1.5 left-[50%] -translate-x-1/2 text-orange-500 font-bold text-sm leading-none bg-[#131921] px-0.5 rounded-full">{cartCount}</span>
                   <ShoppingCart size={24} />
                 </div>
               </Link>
@@ -630,7 +632,7 @@ export default function Navbar() {
 
           <Link href="/cart" className="hidden md:flex items-end relative cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
             <div className="relative flex items-center justify-center">
-              <span className="absolute -top-2 left-[45%] -translate-x-1/2 text-orange-500 font-bold text-base leading-none bg-[#131921] px-0.5 rounded-full">0</span>
+              <span className="absolute -top-2 left-[45%] -translate-x-1/2 text-orange-500 font-bold text-base leading-none bg-[#131921] px-0.5 rounded-full">{cartCount}</span>
               <ShoppingCart size={32} />
             </div>
             <span className="text-sm font-bold ml-1 mb-1">Cart</span>

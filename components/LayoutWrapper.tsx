@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { CartProvider } from "@/context/CartContext";
 
 export default function LayoutWrapper({
   children,
@@ -15,10 +16,10 @@ export default function LayoutWrapper({
   const hideFooter = pathname === "/login" || pathname === "/create-account";
 
   return (
-    <>
+    <CartProvider>
       {!hideNavbar && <Navbar />}
       {children}
       {!hideFooter && <Footer />}
-    </>
+    </CartProvider>
   );
 }

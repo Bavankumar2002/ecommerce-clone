@@ -24,7 +24,8 @@ function CreateAccountContent() {
         if (name.trim() && identifier.trim()) {
             const success = await register(name.trim(), identifier.trim(), password);
             if (success) {
-                router.push("/");
+                const redirectPath = searchParams.get("redirect") || "/";
+                router.push(redirectPath);
             }
         }
     };

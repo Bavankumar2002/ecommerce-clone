@@ -10,6 +10,15 @@ export default function LoginPage() {
     const [step, setStep] = useState(0); // 0: Identifier, 1: Password
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [redirectPath, setRedirectPath] = useState("/");
+
+    useState(() => {
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const r = params.get("redirect");
+            if (r) setRedirectPath(r);
+        }
+    });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,13 +30,13 @@ export default function LoginPage() {
             if (result.success && result.exists) {
                 setStep(1);
             } else if (!result.exists) {
-                router.push(`/create-account?identifier=${encodeURIComponent(email.trim())}`);
+                router.push(`/create-account?identifier=${encodeURIComponent(email.trim())}&redirect=${encodeURIComponent(redirectPath)}`);
             }
         } else {
             // Verify password
             const result = await login(email.trim(), password);
             if (result.success) {
-                router.push("/");
+                router.push(redirectPath);
             }
         }
     };
