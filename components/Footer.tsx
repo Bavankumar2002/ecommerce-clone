@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 const footerColumns = [
   {
@@ -49,28 +51,37 @@ const affiliateLinks = [
 ];
 
 export default function Footer() {
+  const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <footer className="w-full">
       {/* Sign-in Banner */}
-      <div className="bg-white border-t border-gray-200 py-8 flex flex-col items-center justify-center gap-3">
-        <p className="text-lg font-semibold text-gray-900">
-          See personalized recommendations
-        </p>
-        <Link
-          href="/login"
-          className="bg-[#FFD814] hover:bg-[#F7CA00] text-black text-sm font-medium px-6 py-2 rounded-full w-[220px] text-center transition-colors"
-        >
-          Sign in
-        </Link>
-        <p className="text-xs text-gray-600">
-          New customer?{" "}
-          <Link href="/login" className="text-[#007185] hover:text-[#c45500] hover:underline">
-            Start here.
+      {!(mounted && user) && (
+        <div className="bg-white border-t border-gray-200 py-8 flex flex-col items-center justify-center gap-3">
+          <p className="text-lg font-semibold text-gray-900">
+            See personalized recommendations
+          </p>
+          <Link
+            href="/login"
+            className="bg-[#FFD814] hover:bg-[#F7CA00] text-black text-sm font-medium px-6 py-2 rounded-full w-[220px] text-center transition-colors"
+          >
+            Sign in
           </Link>
-        </p>
-      </div>
+          <p className="text-xs text-gray-600">
+            New customer?{" "}
+            <Link href="/login" className="text-[#007185] hover:text-[#c45500] hover:underline">
+              Start here.
+            </Link>
+          </p>
+        </div>
+      )}
 
       {/* Back to Top */}
       <button

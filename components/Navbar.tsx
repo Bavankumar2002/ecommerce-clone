@@ -625,10 +625,10 @@ export default function Navbar() {
             </Link>
           )}
 
-          <div className="hidden md:block cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
+          <Link href="/orders" className="hidden md:block cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
             <p className="text-xs text-gray-300">Returns</p>
             <p className="text-sm font-bold leading-tight">& Orders</p>
-          </div>
+          </Link>
 
           <Link href="/cart" className="hidden md:flex items-end relative cursor-pointer hover:border border-transparent hover:border-white p-1 rounded shrink-0">
             <div className="relative flex items-center justify-center">
