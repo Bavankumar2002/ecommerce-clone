@@ -70,7 +70,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           alt={product.title}
           className="max-h-[180px] max-w-full object-contain group-hover:scale-[1.03] transition-transform duration-300"
         />
-        
+
         {/* Play Icon Circle (similar to screenshot) */}
         <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-white/90 border border-gray-200 flex items-center justify-center shadow-sm cursor-pointer opacity-80 hover:opacity-100">
           <svg

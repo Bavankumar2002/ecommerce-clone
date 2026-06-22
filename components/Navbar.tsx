@@ -468,9 +468,8 @@ export default function Navbar() {
       )}
 
       <div
-        className={`fixed top-0 left-0 h-full w-[320px] max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-full w-[320px] max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center gap-3 bg-[#232F3E] text-white px-4 py-3.5">
           <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center shrink-0">
