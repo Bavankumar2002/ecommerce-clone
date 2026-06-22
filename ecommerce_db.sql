@@ -491,6 +491,38 @@ INSERT IGNORE INTO products (id, title, price, mrp, rating, rating_count, image_
 (379, 'Daily Compact Accessory | Bestseller Model 19 | High Quality Performance', 4086.5, 6526.4, 4.1, 8434, 'https://m.media-amazon.com/images/I/61B5hIAmvdL._AC_SY170_.jpg', '["https://m.media-amazon.com/images/I/61B5hIAmvdL._AC_SY170_.jpg"]', '#19', 'Jewellery', 'Daily', 'Daily Premium Build,Excellent Performance,Category Leading Design,Durable Materials,1 Year Warranty', '{"Material":"Daily Custom Material Value 19-0","Dimensions":"Daily Custom Dimensions Value 19-1","Weight":"Daily Custom Weight Value 19-2","Warranty":"Daily Custom Warranty Value 19-3","Color":"Daily Custom Color Value 19-4"}', 'This is a premium Daily product in the Jewellery department. Engineered for optimal performance and daily convenience, it stands out as a bestseller. Enjoy standard customer support and warranty coverage.', 32),
 (380, 'Generic Eco-friendly Product | Bestseller Model 20 | High Quality Performance', 1162.1, 1576, 4.5, 2638, 'https://m.media-amazon.com/images/I/61B5hIAmvdL._AC_SY170_.jpg', '["https://m.media-amazon.com/images/I/61B5hIAmvdL._AC_SY170_.jpg"]', '#20', 'Jewellery', 'Generic', 'Generic Premium Build,Excellent Performance,Category Leading Design,Durable Materials,1 Year Warranty', '{"Material":"Generic Custom Material Value 20-0","Dimensions":"Generic Custom Dimensions Value 20-1","Weight":"Generic Custom Weight Value 20-2","Warranty":"Generic Custom Warranty Value 20-3","Color":"Generic Custom Color Value 20-4"}', 'This is a premium Generic product in the Jewellery department. Engineered for optimal performance and daily convenience, it stands out as a bestseller. Enjoy standard customer support and warranty coverage.', 106);
 
+-- 8. Create Orders Table
+CREATE TABLE IF NOT EXISTS orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  total DECIMAL(10,2) NOT NULL,
+  shipping_name VARCHAR(255) NOT NULL,
+  shipping_address VARCHAR(512) NOT NULL,
+  shipping_city VARCHAR(100) NOT NULL,
+  shipping_zip VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
+-- 9. Create Order Items Table
+CREATE TABLE IF NOT EXISTS order_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
 
-TRUNCATE TABLE `products`;
+-- 10. Create Cart Items Table
+CREATE TABLE IF NOT EXISTS cart_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_user_product (user_id, product_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
